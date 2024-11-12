@@ -5,10 +5,12 @@ public class CharacterMovement : MonoBehaviour
     public Joystick joystick;
     public float moveSpeed = 5f;
     private Rigidbody rb;
+    private Animator animator;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -25,6 +27,8 @@ public class CharacterMovement : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(movement);
             rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, Time.deltaTime * 10f);
         }
+
+        bool isRunning = movement.magnitude > 0;
+        animator.SetBool("isRunning", isRunning);
     }
 }
-
