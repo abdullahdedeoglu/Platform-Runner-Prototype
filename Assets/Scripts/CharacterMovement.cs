@@ -9,13 +9,15 @@ public class CharacterMovement : MonoBehaviour
     private Rigidbody rb;
     private Animator animator;
     public float rayDistance = 1.5f; 
-    public LayerMask obstacleLayer;  
+    public LayerMask obstacleLayer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        rb.interpolation = RigidbodyInterpolation.Interpolate; // Ekledik
         animator = GetComponent<Animator>();
     }
+
 
     private void FixedUpdate()
     {

@@ -2,31 +2,24 @@ using UnityEngine;
 
 public class CollisionControl : MonoBehaviour
 {
-    public Vector3 respawnPosition;  // Karakterin yeniden baþlayacaðý pozisyon
-    public float stickForce = 20f;   // Stick çarpýþmasýnda uygulanacak kuvvet
+    public Vector3 respawnPosition;  // Karakterin yeniden baþlayacaðý 
     private Rigidbody playerRb;
+
 
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Obstacle"))
+        if (other.CompareTag("Obstacle"))
         {
-            // Diðer engellere çarptýðýnda yeniden baþlat
             Respawn();
         }
-        //else if (collision.gameObject.CompareTag("Rotator"))
-        //{
-        //    // Rotatora çarpýnca yeniden baþlat
-        //    Respawn();
-        //}
-        else if (collision.gameObject.CompareTag("Stick"))
+        else if (other.CompareTag("Stick"))
         {
-            // Stick ile çarpýþmada karakteri çarpma yönüne göre kuvvetle it
-            ApplyStickForce(collision);
+            ApplyStickForce(other);
         }
     }
 
@@ -56,21 +49,25 @@ public class CollisionControl : MonoBehaviour
         playerRb.angularVelocity = Vector3.zero;
     }
 
-    private void ApplyStickForce(Collision collision)
+    private void ApplyStickForce(Collider other)
     {
-        // Stick çarpma yönünü hesapla ve kuvvet uygula
-        Vector3 forceDirection = (transform.position - collision.transform.position).normalized;
-        Vector3 force = forceDirection * stickForce;
-        playerRb.AddForce(force, ForceMode.Impulse);
+        Vector3 explosionPosition = other.ClosestPoint(transform.position); // Çarpma noktasýný al
+        float explosionForce = 50f;
+        float explosionRadius = 2f;
 
-        // Çarpma kuvvetini log'la
-        Debug.Log("Stick Impact Force Applied: " + force);
-        Debug.DrawRay(playerRb.position, force, Color.blue, 1f);
+        playerRb.AddExplosionForce(explosionForce, explosionPosition, explosionRadius, 0.5f, ForceMode.Impulse);
+
+        Debug.Log("Explosion Force Applied with Force: " + explosionForce + " | Radius: " + explosionRadius);
     }
+
 
     private void ApplyRotatingPlatformForce(Collision collision)
     {
-        RotatingPlatform platform = collision.gameObject.GetComponent<RotatingPlatform>();
+        //RotatingPlatform platform = collision.gameObject.GetComponent<RotatingPlatform>();
+        RotateAndMoveObstacle platform = collision.gameObject.GetComponent<RotateAndMoveObstacle>();
+        //float rotationSpeed = 20f;
+        float forceVelocity = 0.5f;
+
         if (platform != null)
         {
             // RotatingPlatform script'inden platformun dönüþ yönüne göre kuvvet uygula
@@ -87,7 +84,7 @@ public class CollisionControl : MonoBehaviour
                 forceDirection = Quaternion.Euler(45, 45, 0) * Vector3.forward;
             }
 
-            Vector3 force = forceDirection * platform.rotationSpeed * platform.forceVelocity;
+            Vector3 force = forceDirection * platform.rotationSpeed * forceVelocity;
             playerRb.AddForce(force, ForceMode.Acceleration);
 
             // Kuvveti log'la ve yönünü çiz
