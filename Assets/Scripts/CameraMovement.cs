@@ -8,7 +8,7 @@ public class CameraMovement : MonoBehaviour
     public Vector3 offset = new Vector3(0, 10, -14);
 
     public float duration = 1f;
-    private CameraMode currentMode = CameraMode.Follow;
+    [SerializeField] private CameraMode currentMode = CameraMode.Follow;
 
     private void Awake()
     {
@@ -53,6 +53,7 @@ public class CameraMovement : MonoBehaviour
         transform.position = targetPosition;
         transform.rotation = targetRotation;
 
+        //yield return new WaitForSeconds(4f);
         SetCameraMode(CameraMode.Follow);  // Geçiþ tamamlandýktan sonra takip moduna dön
     }
 }

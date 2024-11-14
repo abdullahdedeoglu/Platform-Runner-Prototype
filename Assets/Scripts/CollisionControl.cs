@@ -21,8 +21,9 @@ public class CollisionControl : MonoBehaviour
         if (other.CompareTag("Obstacle"))
         {
             Vector3 pushBackDirection = (transform.position - other.transform.position).normalized;
-            transform.position += pushBackDirection * 0.75f;
-            StartCoroutine(HandleDeathAndRespawn());
+            transform.position += pushBackDirection * 0.5f;
+            if (CharacterMovement.Instance.isAlive == true) 
+                StartCoroutine(HandleDeathAndRespawn());
         }
         else if (other.CompareTag("Stick"))
         {
@@ -51,6 +52,7 @@ public class CollisionControl : MonoBehaviour
     private IEnumerator HandleDeathAndRespawn()
     {
         animator.SetBool("isDead", true);
+        CharacterMovement.Instance.isAlive = false;
         yield return new WaitForSeconds(4f);
         animator.SetBool("isDead", false);
 
@@ -58,6 +60,7 @@ public class CollisionControl : MonoBehaviour
         yield return StartCoroutine(CameraMovement.Instance.SmoothTransitionTo(cameraStartPoint.transform.position, cameraStartPoint.transform.rotation));
 
         // Karakteri yeniden baþlatma konumuna taþý
+        CharacterMovement.Instance.isAlive = true;
         transform.position = respawnPosition;
         playerRb.velocity = Vector3.zero;
         playerRb.angularVelocity = Vector3.zero;
