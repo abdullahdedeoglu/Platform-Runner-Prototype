@@ -11,6 +11,8 @@ public class CharacterMovement : MonoBehaviour
     public float rayDistance = 1.5f; 
     public LayerMask obstacleLayer;
 
+    public bool isAlive = true;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -28,7 +30,7 @@ public class CharacterMovement : MonoBehaviour
         Vector3 movement = new Vector3(horizontal, 0f, vertical).normalized;
 
         // Hareket yönünde Raycast gönder
-        if (movement != Vector3.zero && !IsObstacleInPath(movement))
+        if (movement != Vector3.zero && !IsObstacleInPath(movement) && isAlive)
         {
             // Eðer yol boþsa hareket et
             rb.MovePosition(transform.position + movement * moveSpeed * Time.deltaTime);

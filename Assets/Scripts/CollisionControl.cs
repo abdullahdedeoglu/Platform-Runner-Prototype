@@ -1,21 +1,28 @@
 using UnityEngine;
+using System.Collections;
 
 public class CollisionControl : MonoBehaviour
 {
-    public Vector3 respawnPosition;  // Karakterin yeniden baþlayacaðý 
-    private Rigidbody playerRb;
+    public Vector3 respawnPosition;
+    public Animator animator;
 
+    private Rigidbody playerRb;
+    [SerializeField] private GameObject cameraStartPoint;
 
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
+        if (animator == null)
+            animator = GetComponent<Animator>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Obstacle"))
         {
-            Respawn();
+            Vector3 pushBackDirection = (transform.position - other.transform.position).normalized;
+            transform.position += pushBackDirection * 0.75f;
+            StartCoroutine(HandleDeathAndRespawn());
         }
         else if (other.CompareTag("Stick"))
         {
@@ -41,9 +48,16 @@ public class CollisionControl : MonoBehaviour
         }
     }
 
-    private void Respawn()
+    private IEnumerator HandleDeathAndRespawn()
     {
-        // Karakteri baþlangýç pozisyonuna döndür ve hýzýný sýfýrla
+        animator.SetBool("isDead", true);
+        yield return new WaitForSeconds(4f);
+        animator.SetBool("isDead", false);
+
+        // Kamera geçiþini baþlat
+        yield return StartCoroutine(CameraMovement.Instance.SmoothTransitionTo(cameraStartPoint.transform.position, cameraStartPoint.transform.rotation));
+
+        // Karakteri yeniden baþlatma konumuna taþý
         transform.position = respawnPosition;
         playerRb.velocity = Vector3.zero;
         playerRb.angularVelocity = Vector3.zero;
@@ -51,51 +65,25 @@ public class CollisionControl : MonoBehaviour
 
     private void ApplyStickForce(Collider other)
     {
-        Vector3 explosionPosition = other.ClosestPoint(transform.position); // Çarpma noktasýný al
-        float explosionForce = 50f;
-        float explosionRadius = 2f;
-
-        playerRb.AddExplosionForce(explosionForce, explosionPosition, explosionRadius, 0.5f, ForceMode.Impulse);
-
-        Debug.Log("Explosion Force Applied with Force: " + explosionForce + " | Radius: " + explosionRadius);
+        Vector3 explosionPosition = other.ClosestPoint(transform.position);
+        playerRb.AddExplosionForce(50f, explosionPosition, 2f, 0.5f, ForceMode.Impulse);
     }
-
 
     private void ApplyRotatingPlatformForce(Collision collision)
     {
-        //RotatingPlatform platform = collision.gameObject.GetComponent<RotatingPlatform>();
         RotateAndMoveObstacle platform = collision.gameObject.GetComponent<RotateAndMoveObstacle>();
-        //float rotationSpeed = 20f;
         float forceVelocity = 0.5f;
-
         if (platform != null)
         {
-            // RotatingPlatform script'inden platformun dönüþ yönüne göre kuvvet uygula
-            Vector3 forceDirection;
-
-            if (platform.clockwise)
-            {
-                // Saat yönünde dönüyorsa -z yönünde 45 derece
-                forceDirection = Quaternion.Euler(-45, -45, 0) * Vector3.forward;
-            }
-            else
-            {
-                // Saat yönünün tersinde dönüyorsa +z yönünde 45 derece
-                forceDirection = Quaternion.Euler(45, 45, 0) * Vector3.forward;
-            }
-
+            Vector3 forceDirection = platform.clockwise ? Quaternion.Euler(-45, -45, 0) * Vector3.forward
+                                                         : Quaternion.Euler(45, 45, 0) * Vector3.forward;
             Vector3 force = forceDirection * platform.rotationSpeed * forceVelocity;
             playerRb.AddForce(force, ForceMode.Acceleration);
-
-            // Kuvveti log'la ve yönünü çiz
-            Debug.Log("Rotating Platform Force Direction: " + forceDirection + " | Applied Force: " + force);
-            Debug.DrawRay(playerRb.position, force, Color.red);
         }
     }
 
     private void ResetPlayerVelocity()
     {
-        // Platformdan ayrýldýðýnda hýzlarý sýfýrla
         playerRb.velocity = Vector3.zero;
         playerRb.angularVelocity = Vector3.zero;
     }
