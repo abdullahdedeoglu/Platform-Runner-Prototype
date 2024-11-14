@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6213058021731292983}
   m_Layer: 0
   m_Name: RotatingStick
-  m_TagString: Untagged
+  m_TagString: Stick
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
