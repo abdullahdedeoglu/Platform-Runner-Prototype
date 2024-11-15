@@ -405,7 +405,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 773171795424841898, guid: 46c71e2cb5883274ba85935bcbcc0736, type: 3}
       propertyPath: m_Name
-      value: ShiningObstacle (3)
+      value: ShiningObstacle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46c71e2cb5883274ba85935bcbcc0736, type: 3}
@@ -789,7 +789,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 773171795424841898, guid: 46c71e2cb5883274ba85935bcbcc0736, type: 3}
       propertyPath: m_Name
-      value: ShiningObstacle (2)
+      value: 'ShiningObstacle '
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46c71e2cb5883274ba85935bcbcc0736, type: 3}
@@ -1268,7 +1268,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 773171795424841898, guid: 46c71e2cb5883274ba85935bcbcc0736, type: 3}
       propertyPath: m_Name
-      value: ShiningObstacle (1)
+      value: 'ShiningObstacle '
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46c71e2cb5883274ba85935bcbcc0736, type: 3}
@@ -17245,7 +17245,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3216036337093148586, guid: a083567f078f1d144acd11f6ca5301f8, type: 3}
       propertyPath: m_Name
-      value: Half_Donut (1)
+      value: 'Half_Donut '
       objectReference: {fileID: 0}
     - target: {fileID: 3519285512039840884, guid: a083567f078f1d144acd11f6ca5301f8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -17401,7 +17401,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8772665285019727987, guid: 4175e6bf939a3bc4a86be795be6377c4, type: 3}
       propertyPath: m_Name
-      value: Rotator (1)
+      value: 'Rotator '
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4175e6bf939a3bc4a86be795be6377c4, type: 3}
@@ -22519,7 +22519,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3236429384006110793, guid: bf1d436edda590443ad3c0ddb867dfe7, type: 3}
       propertyPath: m_Name
-      value: Platform (1)
+      value: 'Platform '
       objectReference: {fileID: 0}
     - target: {fileID: 3236429384006110793, guid: bf1d436edda590443ad3c0ddb867dfe7, type: 3}
       propertyPath: m_IsActive
