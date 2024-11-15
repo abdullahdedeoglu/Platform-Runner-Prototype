@@ -8,12 +8,27 @@ public class CollisionControl : MonoBehaviour
 
     private Rigidbody playerRb;
     [SerializeField] private GameObject cameraStartPoint;
+    [SerializeField] private bool isPlayer = false;
+
+    private AIMovement aiMovement;
+    private CharacterMovement characterMovement;
+
+    private Component thisCharacter;
 
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
+
+        if (!isPlayer) aiMovement = GetComponent<AIMovement>();
+        else characterMovement = GetComponent<CharacterMovement>();
+
+
         if (animator == null)
             animator = GetComponent<Animator>();
+
+        respawnPosition = this.gameObject.transform.position;
+
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -22,8 +37,23 @@ public class CollisionControl : MonoBehaviour
         {
             Vector3 pushBackDirection = (transform.position - other.transform.position).normalized;
             transform.position += pushBackDirection * 0.5f;
-            if (CharacterMovement.Instance.isAlive == true) 
-                StartCoroutine(HandleDeathAndRespawn());
+
+            if (isPlayer)
+            {
+                if (characterMovement.isAlive)
+                {
+                    StartCoroutine(HandleDeathAndRespawn());
+                }
+            }
+            else
+            {
+                if(aiMovement.isAlive)
+                {
+                    StartCoroutine(HandleDeathAndRespawn());
+                }
+
+            }
+
         }
         else if (other.CompareTag("Stick"))
         {
@@ -51,19 +81,36 @@ public class CollisionControl : MonoBehaviour
 
     private IEnumerator HandleDeathAndRespawn()
     {
+
         animator.SetBool("isDead", true);
-        CharacterMovement.Instance.isAlive = false;
-        yield return new WaitForSeconds(4f);
+
+        if (isPlayer)
+        {
+            characterMovement.SetIsAlive();
+            yield return new WaitForSeconds(4f);
+        }
+        else
+        {
+            aiMovement.ResetAICharacter();
+            yield return new WaitForSeconds(3f);
+        }
+        
         animator.SetBool("isDead", false);
 
         // Kamera geçiþini baþlat
-        yield return StartCoroutine(CameraMovement.Instance.SmoothTransitionTo(cameraStartPoint.transform.position, cameraStartPoint.transform.rotation));
+        if (isPlayer)
+            yield return StartCoroutine(CameraMovement.Instance.SmoothTransitionTo(cameraStartPoint.transform.position, cameraStartPoint.transform.rotation));
 
         // Karakteri yeniden baþlatma konumuna taþý
-        CharacterMovement.Instance.isAlive = true;
+        if (isPlayer)
+            characterMovement.SetIsAlive();
+        else
+            aiMovement.ResetAICharacter();
+
         transform.position = respawnPosition;
         playerRb.velocity = Vector3.zero;
         playerRb.angularVelocity = Vector3.zero;
+
     }
 
     private void ApplyStickForce(Collider other)

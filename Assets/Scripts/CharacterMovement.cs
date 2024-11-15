@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
-    public static CharacterMovement Instance { get; private set; }
 
     public Joystick joystick;
     public float moveSpeed = 10f;
@@ -16,21 +15,8 @@ public class CharacterMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.interpolation = RigidbodyInterpolation.Interpolate; // Ekledik
+        rb.interpolation = RigidbodyInterpolation.Interpolate; 
         animator = GetComponent<Animator>();
-    }
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-        }
-
     }
 
     private void FixedUpdate()
@@ -73,6 +59,11 @@ public class CharacterMovement : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, transform.forward * rayDistance);
+    }
+
+    public void SetIsAlive()
+    {
+        isAlive = !isAlive;
     }
 
 }
