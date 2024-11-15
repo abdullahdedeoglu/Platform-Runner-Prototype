@@ -13,8 +13,6 @@ public class CollisionControl : MonoBehaviour
     private AIMovement aiMovement;
     private CharacterMovement characterMovement;
 
-    private Component thisCharacter;
-
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
