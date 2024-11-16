@@ -5,7 +5,9 @@ public class CameraMovement : MonoBehaviour
 {
     public static CameraMovement Instance;
     public Transform player;
-    public Vector3 offset = new Vector3(0, 10, -14);
+    private Vector3 offset = new Vector3(0, 10, -14);
+
+    public GameObject cameraStartPoint;
 
     public float duration = 1f;
     [SerializeField] private CameraMode currentMode = CameraMode.Follow;
