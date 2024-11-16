@@ -28,6 +28,7 @@ public class PlayerCollisionControl : PlayerControlBase
 
     public override void HandleDeathAndRespawn()
     {
+        GameManager.Instance.UpgradeDeathAmount();
         StartCoroutine(RespawnCoroutine());
     }
 

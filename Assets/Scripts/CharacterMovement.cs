@@ -25,9 +25,12 @@ public class CharacterMovement : MonoBehaviour
 
         Vector3 movement = new Vector3(horizontal, 0f, vertical).normalized;
 
-        rb.MovePosition(transform.position + movement * moveSpeed * Time.deltaTime);
-        Quaternion targetRotation = Quaternion.LookRotation(movement);
-        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, Time.deltaTime * 10f);
+        if (isAlive)
+        {
+            rb.MovePosition(transform.position + movement * moveSpeed * Time.deltaTime);
+            Quaternion targetRotation = Quaternion.LookRotation(movement);
+            rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, Time.deltaTime * 10f);
+        }
 
         // Animasyon ayarý
         bool isRunning = movement.magnitude > 0;

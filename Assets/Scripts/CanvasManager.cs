@@ -1,25 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class CanvasManager : MonoBehaviour
 {
-
     public static CanvasManager Instance { get; private set; }
 
-
-    //public Canvas canvas;
     public TextMeshProUGUI rankText;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public TextMeshProUGUI coinText; // Coin sayaç text'i
+    public TextMeshProUGUI deathCountText;
 
     private void Awake()
     {
-        if(Instance != null && Instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
         }
@@ -29,16 +21,18 @@ public class CanvasManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //ShowRanking();    
-    }
-
     public void ShowRanking(int ranking)
     {
         rankText.text = ranking + ".";
     }
 
+    public void UpdateCoinUI(int coinCount)
+    {
+        coinText.text = "Coins: " + coinCount;
+    }
 
+    public void ShowDeathCount(int deathCount)
+    {
+        deathCountText.text = "Death Count\n" + deathCount;
+    }
 }
