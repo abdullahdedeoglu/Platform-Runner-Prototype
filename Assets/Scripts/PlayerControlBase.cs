@@ -47,6 +47,15 @@ public abstract class PlayerControlBase : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("DeathTrigger"))
+        {
+            Vector3 pushBackDirection = new Vector3(0, 0, 0);
+            HandleCollisionWithObstacle(pushBackDirection);
+        }
+    }
+
     private void ApplyRotatingPlatformForce(Collision collision)
     {
         RotateAndMoveObstacle platform = collision.gameObject.GetComponent<RotateAndMoveObstacle>();
@@ -64,6 +73,12 @@ public abstract class PlayerControlBase : MonoBehaviour
         playerRb.velocity = Vector3.zero;
         playerRb.angularVelocity = Vector3.zero;
     }
+
+    public void SetGhostLayer(bool isGhost)
+    {
+        gameObject.layer = isGhost ? LayerMask.NameToLayer("Ghost") : LayerMask.NameToLayer("Player");
+    }
+
 
     public abstract void HandleCollisionWithObstacle(Vector3 pushBackDirection);
     public abstract void HandleStickCollision(Vector3 explosionPosition);

@@ -17,6 +17,8 @@ public class AIMovement : MonoBehaviour
 
     public Transform startingPosition;
 
+    private bool isAtFinalWaypoint = false; // Son waypoint kontrolü
+
 
     void Start()
     {
@@ -39,12 +41,30 @@ public class AIMovement : MonoBehaviour
 
         if (agentActive && isAlive && !agent.pathPending && agent.remainingDistance < 0.5f)
         {
+            if (currentWaypointIndex == waypoints.Length - 1)
+            {
+                // Son waypoint'e ulaþýldý
+                StopAtFinalWaypoint();
+            }
+            else
+            {
+                currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+                agent.SetDestination(waypoints[currentWaypointIndex].position);
+
+            }
             // Bir sonraki waypoint’e geç
-            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
-            agent.SetDestination(waypoints[currentWaypointIndex].position);
         }
     }
 
+    private void StopAtFinalWaypoint()
+    {
+        if (!isAtFinalWaypoint)
+        {
+            isAtFinalWaypoint = true;
+            agent.isStopped = true; // Hareketi durdur
+            animator.SetBool("isRunning", false); // Koþma animasyonu durdurulur
+        }
+    }
 
     public void ResetAICharacter()
     {
@@ -57,6 +77,7 @@ public class AIMovement : MonoBehaviour
         if (isAlive == false)
         {
             currentWaypointIndex = 0;
+            isAtFinalWaypoint = false;
         }
     }
 
