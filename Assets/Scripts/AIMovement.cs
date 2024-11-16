@@ -5,17 +5,27 @@ public class AIMovement : MonoBehaviour
 {
 
     public Transform[] waypoints; // Waypoint listesi
-    private int currentWaypointIndex = 0; // Hangi waypoint’te olduðunu tutar
+    [SerializeField] private int currentWaypointIndex = 0; // Hangi waypoint’te olduðunu tutar
     private NavMeshAgent agent;
     private Animator animator;
+
     public bool isAlive = true;
 
-    private bool isRunning = true;
+    public bool isRunning = true;
+
+    public bool agentActive = true;
+
+    public Transform startingPosition;
+
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+
+        startingPosition = this.transform;
+
+        waypoints[0] = startingPosition;
 
         if (waypoints.Length > 0)
         {
@@ -26,15 +36,8 @@ public class AIMovement : MonoBehaviour
 
     void Update()
     {
-        if (!isAlive)
-        {
-            agent.isStopped = true; // AI durur
-            return;
-        }
 
-        agent.isStopped = false; // AI hareket eder
-
-        if (!agent.pathPending && agent.remainingDistance < 0.5f)
+        if (agentActive && isAlive && !agent.pathPending && agent.remainingDistance < 0.5f)
         {
             // Bir sonraki waypoint’e geç
             currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
@@ -42,13 +45,26 @@ public class AIMovement : MonoBehaviour
         }
     }
 
+
     public void ResetAICharacter()
     {
+
         animator.SetBool("isRunning", !isRunning); // Koþma animasyonu durdurulur
         isRunning = !isRunning;
 
-        if (isAlive == false) currentWaypointIndex = 0;
+        isAlive = !isAlive;
 
-        isAlive = !isAlive; // isAlive durumunu tersine çevirir
+        if (isAlive == false)
+        {
+            currentWaypointIndex = 0;
+        }
     }
+
+    public void SetAgentStatus()
+    {
+        agentActive = !agentActive;
+        agent.enabled = agentActive;
+    }
+
+
 }

@@ -35,9 +35,9 @@ public class CanvasManager : MonoBehaviour
         //ShowRanking();    
     }
 
-    public void ShowRanking(string ranking)
+    public void ShowRanking(int ranking)
     {
-        rankText.text = ranking;
+        rankText.text = ranking + ".";
     }
 
 

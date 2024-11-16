@@ -13,6 +13,7 @@ public class CollisionControl : MonoBehaviour
     private AIMovement aiMovement;
     private CharacterMovement characterMovement;
 
+
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
@@ -63,7 +64,7 @@ public class CollisionControl : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("RotatingPlatform"))
         {
-            // Platformdaki hareketi zorlaþtýrmak için kuvvet uygula
+            // Platformdaki hareketi zorlaÅŸtÄ±rmak iÃ§in kuvvet uygula
             ApplyRotatingPlatformForce(collision);
         }
     }
@@ -72,7 +73,7 @@ public class CollisionControl : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("RotatingPlatform"))
         {
-            // Platformdan ayrýldýðýnda hýzlarý sýfýrla
+            // Platformdan ayrÄ±ldÄ±ÄŸÄ±nda hÄ±zlarÄ± sÄ±fÄ±rla
             ResetPlayerVelocity();
         }
     }
@@ -89,22 +90,28 @@ public class CollisionControl : MonoBehaviour
         }
         else
         {
+            if (aiMovement.agentActive) aiMovement.SetAgentStatus();
             aiMovement.ResetAICharacter();
-            yield return new WaitForSeconds(3f);
+
+            yield return new WaitForSeconds(6f);
         }
         
         animator.SetBool("isDead", false);
 
-        // Kamera geçiþini baþlat
+        // Kamera geÃ§iÅŸini baÅŸlat
         if (isPlayer)
             yield return StartCoroutine(CameraMovement.Instance.SmoothTransitionTo(cameraStartPoint.transform.position, cameraStartPoint.transform.rotation));
 
-        // Karakteri yeniden baþlatma konumuna taþý
+        // Karakteri yeniden baÅŸlatma konumuna taÅŸÄ±
         if (isPlayer)
             characterMovement.SetIsAlive();
-        else
+        else if(!isPlayer)
+        {       
             aiMovement.ResetAICharacter();
-
+            
+            aiMovement.SetAgentStatus();
+        }
+            
         transform.position = respawnPosition;
         playerRb.velocity = Vector3.zero;
         playerRb.angularVelocity = Vector3.zero;
@@ -114,7 +121,15 @@ public class CollisionControl : MonoBehaviour
     private void ApplyStickForce(Collider other)
     {
         Vector3 explosionPosition = other.ClosestPoint(transform.position);
+
+        if (!isPlayer)
+        {
+            aiMovement.SetAgentStatus();
+        }
+
+            // Patlama kuvveti uygula
         playerRb.AddExplosionForce(50f, explosionPosition, 2f, 0.5f, ForceMode.Impulse);
+
     }
 
     private void ApplyRotatingPlatformForce(Collision collision)
