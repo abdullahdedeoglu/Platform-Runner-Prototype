@@ -38,12 +38,12 @@ public class CanvasManager : MonoBehaviour
 
     public void UpdateCoinUI(int coinCount)
     {
-        coinText.text = "Coins: " + coinCount;
+        coinText.text = coinCount.ToString();
     }
 
     public void ShowDeathCount(int deathCount)
     {
-        deathCountText.text = "Death Count\n" + deathCount;
+        deathCountText.text = deathCount.ToString();
     }
 
     public void SwitchCanvasses()

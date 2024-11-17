@@ -25,7 +25,7 @@ public class AICollisionControl : PlayerControlBase
     public override void HandleStickCollision(Vector3 explosionPosition)
     {
         aiMovement.SetAgentStatus();
-        playerRb.AddExplosionForce(25f, explosionPosition, 2f, 0.5f, ForceMode.Impulse);
+        playerRb.AddExplosionForce(50f, explosionPosition, 2f, 0.5f, ForceMode.Impulse);
         StartCoroutine(GetAgentBack());
     }
 
@@ -66,7 +66,9 @@ public class AICollisionControl : PlayerControlBase
     {
         if (aiMovement != null)
         {
-            aiMovement.enabled = false; // Karakter hareketlerini devre dýþý býrak
+            aiMovement.SetAgentStatus();
+            aiMovement.AICharacterIsDone();
         }
     }
+
 }

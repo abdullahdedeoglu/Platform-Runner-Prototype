@@ -9,6 +9,7 @@ TagManager:
   - Stick
   - DeathTrigger
   - FinishLine
+  - Opponent
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - Obstacle
   - Player
   - Ghost
-  - 
+  - Opponent
   - 
   - 
   - 

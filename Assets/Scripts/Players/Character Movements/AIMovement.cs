@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 public class AIMovement : MonoBehaviour
 {
@@ -38,6 +39,10 @@ public class AIMovement : MonoBehaviour
 
     void Update()
     {
+        if(GameManager.Instance.currentGameMode == GameMode.PaintingWall)
+        {
+            AICharacterIsDone();
+        }
 
         if (agentActive && isAlive && !agent.pathPending && agent.remainingDistance < 0.5f)
         {
@@ -87,5 +92,13 @@ public class AIMovement : MonoBehaviour
         agent.enabled = agentActive;
     }
 
-
+    public void AICharacterIsDone()
+    {
+        StartCoroutine(AICharacterIsDoneCoroutine());
+    }
+    private IEnumerator AICharacterIsDoneCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+        gameObject.SetActive(false);
+    }
 }

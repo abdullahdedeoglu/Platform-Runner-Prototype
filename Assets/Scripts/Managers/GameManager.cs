@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
     private int coinCount = 0;
     public int deathCount = 0;
     private GameObject floatingJoystick;
+    public GameMode currentGameMode;
 
     private void Awake()
     {
@@ -22,6 +23,19 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         floatingJoystick = GameObject.Find("Floating Joystick");
+        currentGameMode = GameMode.Race;
+        SetOrientation();
+    }
+
+    private void SetOrientation()
+    {
+        // Oyun baþladýðýnda dikey moda ayarlar
+        Screen.orientation = ScreenOrientation.Portrait;
+
+        Screen.autorotateToLandscapeLeft = false;
+        Screen.autorotateToLandscapeRight = false;
+        Screen.autorotateToPortrait = true;
+        Screen.autorotateToPortraitUpsideDown = true;
     }
 
     public void AddCoin(int value)
@@ -40,7 +54,15 @@ public class GameManager : MonoBehaviour
 
     public void OnPlayerFinish()
     {
-        Debug.Log("We reached the end line!");
+        
+        SwitchGameMode(GameMode.PaintingWall);
+
+    }
+
+    private void SwitchGameMode(GameMode gameMode)
+    {
+        currentGameMode = gameMode;
+
         floatingJoystick.gameObject.SetActive(false);
 
         StartCoroutine(CameraMovement.Instance.SmoothTransitionTo(
@@ -50,6 +72,13 @@ public class GameManager : MonoBehaviour
 
         CanvasManager.Instance.SwitchCanvasses();
 
-        //TODO
+        //TODO PAINTING WALL MINI GAME SCRIPT'INI AKTÝFLEÞTÝR.
+
     }
+}
+
+public enum GameMode
+{
+    Race,
+    PaintingWall
 }
