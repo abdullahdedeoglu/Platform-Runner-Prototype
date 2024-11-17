@@ -112,5 +112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coinAnimationPrefab: {fileID: 0}
   uiTarget: {fileID: 0}
+  canvas: {fileID: 0}
   coinValue: 1
-  animationSpeed: 1e-11
+  animationSpeed: 0.75
+  animationDelay: 0.1

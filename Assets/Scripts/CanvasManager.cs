@@ -9,6 +9,11 @@ public class CanvasManager : MonoBehaviour
     public TextMeshProUGUI coinText; // Coin sayaç text'i
     public TextMeshProUGUI deathCountText;
 
+    public GameObject defaultCanvas;
+    public GameObject paintWallCanvas;
+
+    private bool switchCanvas = true;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -19,6 +24,11 @@ public class CanvasManager : MonoBehaviour
         {
             Instance = this;
         }
+    }
+
+    private void Start()
+    {
+        SwitchCanvasses();
     }
 
     public void ShowRanking(int ranking)
@@ -34,5 +44,12 @@ public class CanvasManager : MonoBehaviour
     public void ShowDeathCount(int deathCount)
     {
         deathCountText.text = "Death Count\n" + deathCount;
+    }
+
+    public void SwitchCanvasses()
+    {
+        switchCanvas = !switchCanvas;
+        defaultCanvas.SetActive(!switchCanvas);
+        paintWallCanvas.SetActive(switchCanvas);
     }
 }

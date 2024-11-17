@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     private int coinCount = 0;
     public int deathCount = 0;
+    private GameObject floatingJoystick;
 
     private void Awake()
     {
@@ -16,6 +17,11 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
         }
+    }
+
+    private void Start()
+    {
+        floatingJoystick = GameObject.Find("Floating Joystick");
     }
 
     public void AddCoin(int value)
@@ -30,5 +36,20 @@ public class GameManager : MonoBehaviour
     {
         deathCount++;
         CanvasManager.Instance.ShowDeathCount(deathCount);
+    }
+
+    public void OnPlayerFinish()
+    {
+        Debug.Log("We reached the end line!");
+        floatingJoystick.gameObject.SetActive(false);
+
+        StartCoroutine(CameraMovement.Instance.SmoothTransitionTo(
+            CameraMovement.Instance.paintingWallCameraPoint.transform.position,
+            CameraMovement.Instance.paintingWallCameraPoint.transform.rotation,
+            true));
+
+        CanvasManager.Instance.SwitchCanvasses();
+
+        //TODO
     }
 }

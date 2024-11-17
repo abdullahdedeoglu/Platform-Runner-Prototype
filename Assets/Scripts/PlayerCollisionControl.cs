@@ -42,7 +42,8 @@ public class PlayerCollisionControl : PlayerControlBase
         // Kamera geçiþi
         yield return StartCoroutine(CameraMovement.Instance.SmoothTransitionTo(
             CameraMovement.Instance.cameraStartPoint.transform.position,
-            CameraMovement.Instance.cameraStartPoint.transform.rotation));
+            CameraMovement.Instance.cameraStartPoint.transform.rotation,
+            false));
 
         // Yeniden doðma
         characterMovement.SetIsAlive();
@@ -50,6 +51,35 @@ public class PlayerCollisionControl : PlayerControlBase
         SetGhostLayer(false);
         playerRb.velocity = Vector3.zero;
         playerRb.angularVelocity = Vector3.zero;
+    }
+
+    public override void HandleFinishLine()
+    {
+        characterMovement.StopRunning(); // Karakterin koþma animasyonunu durdur
+
+        Vector3 positionToSetTarget = new Vector3(-2.5f, 0, 220f);
+
+        // Coroutine baþlatýlarak hareket zamana yayýlýr
+        StartCoroutine(MoveToTarget(transform.position, positionToSetTarget, 2f)); // 2 saniyede hedefe ulaþ
+
+        characterMovement.enabled = false;
+
+        // Gerekirse diðer iþlemleri tetikle (animasyon, kamera geçiþi vb.)
+        GameManager.Instance.OnPlayerFinish(); // Örnek bir GameManager fonksiyonu
+    }
+
+    private IEnumerator MoveToTarget(Vector3 start, Vector3 target, float duration)
+    {
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            transform.position = Vector3.Lerp(start, target, elapsed / duration); // Hareketi zamana yay
+            elapsed += Time.deltaTime; // Geçen zamaný artýr
+            yield return null; // Bir sonraki frame'i bekle
+        }
+
+        transform.position = target; // Hedef konuma tam olarak yerleþ
     }
 
 

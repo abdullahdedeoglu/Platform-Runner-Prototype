@@ -8,6 +8,7 @@ public class CameraMovement : MonoBehaviour
     private Vector3 offset = new Vector3(0, 10, -14);
 
     public GameObject cameraStartPoint;
+    public GameObject paintingWallCameraPoint;
 
     public float duration = 1f;
     [SerializeField] private CameraMode currentMode = CameraMode.Follow;
@@ -37,7 +38,7 @@ public class CameraMovement : MonoBehaviour
     }
 
     // Ölüm sonrasý geçiþi yumuþatmak için
-    public IEnumerator SmoothTransitionTo(Vector3 targetPosition, Quaternion targetRotation)
+    public IEnumerator SmoothTransitionTo(Vector3 targetPosition, Quaternion targetRotation, bool isNormal)
     {
         SetCameraMode(CameraMode.Transition);  // Geçiþ moduna geçiþ yap
         Vector3 startPosition = transform.position;
@@ -56,12 +57,18 @@ public class CameraMovement : MonoBehaviour
         transform.rotation = targetRotation;
 
         //yield return new WaitForSeconds(4f);
-        SetCameraMode(CameraMode.Follow);  // Geçiþ tamamlandýktan sonra takip moduna dön
+        if(!isNormal)
+            SetCameraMode(CameraMode.Follow);  // Geçiþ tamamlandýktan sonra takip moduna dön
+        else
+        {
+            SetCameraMode(CameraMode.Normal); 
+        }
     }
 }
 
 public enum CameraMode
 {
     Follow,     // Karakteri takip etme modu
-    Transition  // Geçiþ modu (ölüm, yeniden doðma gibi geçiþler)
+    Transition,
+    Normal
 }

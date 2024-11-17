@@ -42,4 +42,9 @@ public class CharacterMovement : MonoBehaviour
         isAlive = !isAlive;
     }
 
+    public void StopRunning()
+    {
+        animator.SetBool("isRunning", false);
+    }
+
 }

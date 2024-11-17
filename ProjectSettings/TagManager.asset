@@ -8,6 +8,7 @@ TagManager:
   - RotatingPlatform
   - Stick
   - DeathTrigger
+  - FinishLine
   layers:
   - Default
   - TransparentFX

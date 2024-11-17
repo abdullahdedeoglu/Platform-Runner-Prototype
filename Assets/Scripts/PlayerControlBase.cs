@@ -54,6 +54,10 @@ public abstract class PlayerControlBase : MonoBehaviour
             Vector3 pushBackDirection = new Vector3(0, 0, 0);
             HandleCollisionWithObstacle(pushBackDirection);
         }
+        if (other.CompareTag("FinishLine"))
+        {
+            HandleFinishLine();
+        }
     }
 
     private void ApplyRotatingPlatformForce(Collision collision)
@@ -83,4 +87,5 @@ public abstract class PlayerControlBase : MonoBehaviour
     public abstract void HandleCollisionWithObstacle(Vector3 pushBackDirection);
     public abstract void HandleStickCollision(Vector3 explosionPosition);
     public abstract void HandleDeathAndRespawn();
+    public abstract void HandleFinishLine();
 }

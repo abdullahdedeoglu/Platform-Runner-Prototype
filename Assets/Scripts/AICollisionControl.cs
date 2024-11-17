@@ -61,4 +61,12 @@ public class AICollisionControl : PlayerControlBase
         playerRb.velocity = Vector3.zero;
         playerRb.angularVelocity = Vector3.zero;
     }
+
+    public override void HandleFinishLine()
+    {
+        if (aiMovement != null)
+        {
+            aiMovement.enabled = false; // Karakter hareketlerini devre dýþý býrak
+        }
+    }
 }
