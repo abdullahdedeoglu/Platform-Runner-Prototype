@@ -72,7 +72,8 @@ public class GameManager : MonoBehaviour
 
         CanvasManager.Instance.SwitchCanvasses();
 
-        //TODO PAINTING WALL MINI GAME SCRIPT'INI AKTÝFLEÞTÝR.
+        PaintingWallMiniGameManager.Instance.enabled = true;
+        PaintingWallMiniGameManager.Instance.InitializePaintingMode();
 
     }
 }

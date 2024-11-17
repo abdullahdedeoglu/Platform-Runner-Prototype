@@ -13,23 +13,29 @@ public class WallPainter : MonoBehaviour
     private Texture2D wallTexture;                 // Duvarýn boyanabilir Texture'u
     private Vector2 textureSize;                   // Texture boyutlarý
 
+    private int totalPixels;         // Duvarýn toplam piksel sayýsý
+    private int paintedPixels = 0;  // Boyanmýþ piksel sayýsý
+
+    public delegate void PaintProgressUpdate(float percentage);
+    public static event PaintProgressUpdate OnPaintProgressUpdated;
+
     public void InitializePainter()
     {
-        Debug.LogWarning("WallPainter Initialization Started");
 
         // Varsayýlan ayarlar
         currentColor = Color.red;
-        brushSize = 20f;
-
-        Debug.LogWarning("Default settings applied: Color = Red, Brush Size = 1");
+        brushSize = 25f;
 
         // Texture oluþtur
         InitializeWallTexture();
+
+        // Toplam piksel sayýsýný hesapla
+        totalPixels = wallTexture.width * wallTexture.height;
+        paintedPixels = 0;
     }
 
     private void InitializeWallTexture()
     {
-        Debug.LogWarning("Initializing Wall Texture...");
 
         // Mevcut duvar malzemesinin ana Texture'unu al
         Texture mainTexture = wallRenderer.material.mainTexture;
@@ -40,25 +46,18 @@ public class WallPainter : MonoBehaviour
             wallRenderer.material.mainTexture = wallTexture;   // Yeni texture'u duvara uygula
             textureSize = new Vector2(wallTexture.width, wallTexture.height);
 
-            Debug.LogWarning($"Wall texture initialized successfully. Size: {textureSize.x}x{textureSize.y}");
-        }
-        else
-        {
-            Debug.LogError("Wall material must use a Texture2D! Texture initialization failed.");
         }
     }
 
     public void SetBrushColor(Color color)
     {
         currentColor = color;
-        Debug.LogWarning($"Brush color updated to: {color}");
     }
 
     public void SetBrushSize(float size)
     {
         brushSize = size;
         brush.localScale = new Vector3(size, size, size);
-        Debug.LogWarning($"Brush size updated to: {size}");
     }
 
     private void Update()
@@ -70,12 +69,10 @@ public class WallPainter : MonoBehaviour
     {
         if (Input.GetMouseButton(0)) // Sol týklama kontrolü
         {
-            Debug.LogWarning("Mouse button held down. Checking for raycast hit...");
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                Debug.LogWarning($"Raycast hit detected at: {hit.point}");
 
                 if (hit.transform == wallPlane)
                 {
@@ -87,36 +84,22 @@ public class WallPainter : MonoBehaviour
 
                     Paint(hitPoint); // Boyama iþlemini yap
                 }
-                else
-                {
-                    //Debug.LogError($"Raycast hit a different object: {hit.transform.name}");
-                }
-            }
-            else
-            {
-                //Debug.LogError("Raycast did not hit anything.");
             }
         }
     }
 
     private void Paint(Vector3 position)
     {
-        Debug.LogWarning($"Paint method called at position: {position}");
-
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             if (hit.transform == wallPlane)
             {
                 Vector2 pixelUV = hit.textureCoord;
-                Debug.LogWarning($"Texture coordinates: {pixelUV}");
 
                 pixelUV.x *= wallTexture.width;
                 pixelUV.y *= wallTexture.height;
 
-                Debug.LogWarning($"Converted texture coordinates: {pixelUV}");
-
-                // Texture üzerinde boyama yap
                 for (int x = -Mathf.CeilToInt(brushSize); x < Mathf.CeilToInt(brushSize); x++)
                 {
                     for (int y = -Mathf.CeilToInt(brushSize); y < Mathf.CeilToInt(brushSize); y++)
@@ -124,30 +107,26 @@ public class WallPainter : MonoBehaviour
                         int px = (int)pixelUV.x + x;
                         int py = (int)pixelUV.y + y;
 
-                        // Texture sýnýrlarýnýn dýþýna taþmamasý için kontrol
                         if (px >= 0 && px < wallTexture.width && py >= 0 && py < wallTexture.height)
                         {
-                            wallTexture.SetPixel(px, py, currentColor);
-                        }
-                        else
-                        {
-                            Debug.LogError($"Pixel ({px}, {py}) is out of bounds. Skipping paint.");
+                            Color pixelColor = wallTexture.GetPixel(px, py);
+                            if (pixelColor != currentColor) // Eðer piksel daha önce boyanmamýþsa
+                            {
+                                wallTexture.SetPixel(px, py, currentColor);
+                                paintedPixels++;
+                            }
                         }
                     }
                 }
 
                 // Texture'u uygula
                 wallTexture.Apply();
-                Debug.LogWarning("Texture updated and applied.");
+
+                // Boyanma yüzdesini hesapla ve event gönder
+                float paintedPercentage = (paintedPixels / (float)totalPixels) * 100f;
+                OnPaintProgressUpdated?.Invoke(paintedPercentage);
             }
-            else
-            {
-                Debug.LogError("Paint method: Raycast hit a different object.");
-            }
-        }
-        else
-        {
-            Debug.LogError("Paint method: Raycast did not hit anything.");
         }
     }
 }
+
