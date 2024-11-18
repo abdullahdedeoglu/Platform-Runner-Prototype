@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UIElements;
 
 public class CanvasManager : MonoBehaviour
 {
@@ -11,11 +10,10 @@ public class CanvasManager : MonoBehaviour
     public TextMeshProUGUI deathCountText;
 
     [SerializeField] private TextMeshProUGUI progressText;
-    [SerializeField] private TextMeshProUGUI finishTheGameText;
-    public Button playAgainButton;
 
     public GameObject defaultCanvas;
     public GameObject paintWallCanvas;
+    public GameObject winCanvas;
 
     private bool switchCanvas = true;
 
@@ -33,6 +31,7 @@ public class CanvasManager : MonoBehaviour
 
     private void Start()
     {
+        winCanvas.SetActive(false);
         SwitchCanvasses();
     }
 
@@ -61,8 +60,7 @@ public class CanvasManager : MonoBehaviour
     }
     public void ShowWinCanvas()
     {
-        finishTheGameText.enabled = true;
-        playAgainButton.SetEnabled(true);
+        winCanvas.SetActive(true);
     }
     public void SwitchCanvasses()
     {

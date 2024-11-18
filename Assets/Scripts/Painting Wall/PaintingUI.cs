@@ -14,7 +14,7 @@ public class PaintingUI : MonoBehaviour
     void Start()
     {
         sizeSlider.minValue = 5f; // Minimum fýrça boyutu
-        sizeSlider.maxValue = 50f;  // Maksimum fýrça boyutu
+        sizeSlider.maxValue = 150f;  // Maksimum fýrça boyutu
         sizeSlider.value = 1f;      // Varsayýlan fýrça boyutu
     }
 

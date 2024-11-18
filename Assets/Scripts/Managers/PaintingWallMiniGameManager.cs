@@ -24,7 +24,7 @@ public class PaintingWallMiniGameManager : MonoBehaviour
 
     public void CheckWinCondition(float paintedPercentage)
     {
-        if (paintedPercentage >= 100f) // %100 boyandýysa
+        if (paintedPercentage >= 100) // %100 boyandýysa
         {
             wallPainter.enabled = false; // Duvar boyamayý durdur
             paintingUI.enabled = false;     // UI'yý devre dýþý býrak

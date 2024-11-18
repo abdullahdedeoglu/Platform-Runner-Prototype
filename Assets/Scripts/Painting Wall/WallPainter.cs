@@ -24,13 +24,14 @@ public class WallPainter : MonoBehaviour
 
         // Varsayýlan ayarlar
         currentColor = Color.red;
-        brushSize = 25f;
+        brushSize = 75f;
 
         // Texture oluþtur
         InitializeWallTexture();
 
         // Toplam piksel sayýsýný hesapla
-        totalPixels = wallTexture.width * wallTexture.height;
+        totalPixels = (int)(wallTexture.width * wallTexture.height * 0.9999f); // %1 sapma
+
         paintedPixels = 0;
     }
 
@@ -110,11 +111,12 @@ public class WallPainter : MonoBehaviour
                         if (px >= 0 && px < wallTexture.width && py >= 0 && py < wallTexture.height)
                         {
                             Color pixelColor = wallTexture.GetPixel(px, py);
-                            if (pixelColor != currentColor) // Eðer piksel daha önce boyanmamýþsa
+                            // Eðer piksel beyazsa boyanmamýþ kabul edilir
+                            if (pixelColor == Color.white)
                             {
-                                wallTexture.SetPixel(px, py, currentColor);
                                 paintedPixels++;
                             }
+                            wallTexture.SetPixel(px, py, currentColor);
                         }
                     }
                 }
@@ -125,8 +127,10 @@ public class WallPainter : MonoBehaviour
                 // Boyanma yüzdesini hesapla ve event gönder
                 float paintedPercentage = (paintedPixels / (float)totalPixels) * 100f;
                 OnPaintProgressUpdated?.Invoke(paintedPercentage);
+                PaintingWallMiniGameManager.Instance.CheckWinCondition(paintedPercentage);
             }
         }
     }
+
 }
 
