@@ -29,6 +29,7 @@ public class PaintingWallMiniGameManager : MonoBehaviour
             wallPainter.enabled = false; // Duvar boyamayý durdur
             paintingUI.enabled = false;     // UI'yý devre dýþý býrak
             CanvasManager.Instance.ShowWinCanvas();         // Kazanma ekranýný göster
+            SoundManager.Instance.PlayGameWinSound();
         }
     }
 

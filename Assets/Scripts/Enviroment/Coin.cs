@@ -32,6 +32,7 @@ public class Coin : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isCollected = true;
+            SoundManager.Instance.PlayCoinCollectSound();
             StartCoroutine(CollectCoin());
         }
     }

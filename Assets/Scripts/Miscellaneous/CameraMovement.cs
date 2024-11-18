@@ -41,6 +41,8 @@ public class CameraMovement : MonoBehaviour
     public IEnumerator SmoothTransitionTo(Vector3 targetPosition, Quaternion targetRotation, bool isNormal)
     {
         SetCameraMode(CameraMode.Transition);  // Geçiþ moduna geçiþ yap
+        SoundManager.Instance.PlayCameraTransitionSound();
+
         Vector3 startPosition = transform.position;
         Quaternion startRotation = transform.rotation;
         float elapsed = 0f;

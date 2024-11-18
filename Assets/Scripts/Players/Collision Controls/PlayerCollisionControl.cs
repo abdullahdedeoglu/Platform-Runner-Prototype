@@ -15,6 +15,7 @@ public class PlayerCollisionControl : PlayerControlBase
 
     public override void HandleCollisionWithObstacle(Vector3 pushBackDirection)
     {
+        SoundManager.Instance.PlayDeathSound();
         transform.position += pushBackDirection * 0.5f;
         SetGhostLayer(true);
         if (characterMovement.isAlive)

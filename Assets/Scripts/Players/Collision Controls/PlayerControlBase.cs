@@ -22,11 +22,13 @@ public abstract class PlayerControlBase : MonoBehaviour
         if (collision.gameObject.CompareTag("Obstacle"))
         {
             Vector3 pushBackDirection = (transform.position - collision.transform.position).normalized;
+            SoundManager.Instance.PlayCollisionSound();
             HandleCollisionWithObstacle(pushBackDirection);
         }
         else if (collision.gameObject.CompareTag("Stick"))
         {
             Vector3 explosionPosition = collision.contacts[0].point;
+            SoundManager.Instance.PlayCollisionSound();
             HandleStickCollision(explosionPosition);
         }
     }

@@ -30,7 +30,6 @@ public class GameManager : MonoBehaviour
 
     private void SetOrientation()
     {
-        // Oyun baþladýðýnda dikey moda ayarlar
         Screen.orientation = ScreenOrientation.Portrait;
 
         Screen.autorotateToLandscapeLeft = false;
@@ -43,7 +42,6 @@ public class GameManager : MonoBehaviour
     {
         coinCount += value;
 
-        // UI'yi güncelle
         CanvasManager.Instance.UpdateCoinUI(coinCount);
     }
 
@@ -78,6 +76,10 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
     public void RestartGame()
     {
         SceneManager.LoadScene(0);
