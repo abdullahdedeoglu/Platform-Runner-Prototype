@@ -3,18 +3,19 @@ using System.Collections;
 
 public class CameraMovement : MonoBehaviour
 {
-    public static CameraMovement Instance;
-    public Transform player;
-    private Vector3 offset = new Vector3(0, 10, -14);
+    public static CameraMovement Instance; // Singleton instance
+    public Transform player;               // Reference to the player
+    private Vector3 offset = new Vector3(0, 10, -14); // Offset for camera position
 
-    public GameObject cameraStartPoint;
-    public GameObject paintingWallCameraPoint;
+    public GameObject cameraStartPoint;        // Camera's start position
+    public GameObject paintingWallCameraPoint; // Position for the painting wall camera
 
-    public float duration = 1f;
-    [SerializeField] private CameraMode currentMode = CameraMode.Follow;
+    public float duration = 1f; // Duration for smooth transitions
+    [SerializeField] private CameraMode currentMode = CameraMode.Follow; // Current camera mode
 
     private void Awake()
     {
+        // Ensure there is only one instance of CameraMovement
         if (Instance == null)
             Instance = this;
         else
@@ -25,7 +26,7 @@ public class CameraMovement : MonoBehaviour
     {
         if (player == null || currentMode == CameraMode.Transition) return;
 
-        // Kamera takip modunda ise oyuncuyu takip et
+        // Follow the player in follow mode
         if (currentMode == CameraMode.Follow)
         {
             transform.position = player.position + offset;
@@ -37,10 +38,10 @@ public class CameraMovement : MonoBehaviour
         currentMode = mode;
     }
 
-    // Ölüm sonrasý geçiþi yumuþatmak için
+    // Smoothly transitions the camera to a target position and rotation
     public IEnumerator SmoothTransitionTo(Vector3 targetPosition, Quaternion targetRotation, bool isNormal)
     {
-        SetCameraMode(CameraMode.Transition);  // Geçiþ moduna geçiþ yap
+        SetCameraMode(CameraMode.Transition); // Switch to transition mode
         SoundManager.Instance.PlayCameraTransitionSound();
 
         Vector3 startPosition = transform.position;
@@ -58,19 +59,16 @@ public class CameraMovement : MonoBehaviour
         transform.position = targetPosition;
         transform.rotation = targetRotation;
 
-        //yield return new WaitForSeconds(4f);
-        if(!isNormal)
-            SetCameraMode(CameraMode.Follow);  // Geçiþ tamamlandýktan sonra takip moduna dön
+        if (!isNormal)
+            SetCameraMode(CameraMode.Follow); // Return to follow mode after transition
         else
-        {
-            SetCameraMode(CameraMode.Normal); 
-        }
+            SetCameraMode(CameraMode.Normal); // Switch to normal mode
     }
 }
 
 public enum CameraMode
 {
-    Follow,     // Karakteri takip etme modu
-    Transition,
-    Normal
+    Follow,     // Follows the player
+    Transition, // Smooth transition between points
+    Normal      // Static or specific camera mode
 }

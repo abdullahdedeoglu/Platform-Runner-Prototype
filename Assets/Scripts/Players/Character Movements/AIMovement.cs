@@ -4,22 +4,17 @@ using System.Collections;
 
 public class AIMovement : MonoBehaviour
 {
-
-    public Transform[] waypoints; // Waypoint listesi
-    [SerializeField] private int currentWaypointIndex = 0; // Hangi waypoint’te olduðunu tutar
+    public Transform[] waypoints; // List of waypoints for the AI to follow
+    [SerializeField] private int currentWaypointIndex = 0; // Current waypoint index
     private NavMeshAgent agent;
     private Animator animator;
 
-    public bool isAlive = true;
+    public bool isAlive = true;  // AI alive state
+    public bool isRunning = true;  // AI running state
+    public bool agentActive = true;  // AI movement active state
 
-    public bool isRunning = true;
-
-    public bool agentActive = true;
-
-    public Transform startingPosition;
-
-    private bool isAtFinalWaypoint = false; // Son waypoint kontrolü
-
+    public Transform startingPosition; // Starting position of the AI
+    private bool isAtFinalWaypoint = false; // Check if AI reached the final waypoint
 
     void Start()
     {
@@ -27,9 +22,9 @@ public class AIMovement : MonoBehaviour
         animator = GetComponent<Animator>();
 
         startingPosition = this.transform;
+        waypoints[0] = startingPosition; // Set the first waypoint as the starting position
 
-        waypoints[0] = startingPosition;
-
+        // Start moving to the first waypoint if waypoints are defined
         if (waypoints.Length > 0)
         {
             agent.SetDestination(waypoints[currentWaypointIndex].position);
@@ -39,25 +34,25 @@ public class AIMovement : MonoBehaviour
 
     void Update()
     {
-        if(GameManager.Instance.currentGameMode == GameMode.PaintingWall)
+        // Stop AI movement during the painting wall phase
+        if (GameManager.Instance.currentGameMode == GameMode.PaintingWall)
         {
             AICharacterIsDone();
         }
 
+        // Check if the agent is active and not moving to a new path
         if (agentActive && isAlive && !agent.pathPending && agent.remainingDistance < 0.5f)
         {
+            // Handle final waypoint or move to the next one
             if (currentWaypointIndex == waypoints.Length - 1)
             {
-                // Son waypoint'e ulaþýldý
                 StopAtFinalWaypoint();
             }
             else
             {
                 currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
                 agent.SetDestination(waypoints[currentWaypointIndex].position);
-
             }
-            // Bir sonraki waypoint’e geç
         }
     }
 
@@ -66,20 +61,20 @@ public class AIMovement : MonoBehaviour
         if (!isAtFinalWaypoint)
         {
             isAtFinalWaypoint = true;
-            agent.isStopped = true; // Hareketi durdur
-            animator.SetBool("isRunning", false); // Koþma animasyonu durdurulur
+            agent.isStopped = true; // Stop movement
+            animator.SetBool("isRunning", false); // Stop running animation
         }
     }
 
     public void ResetAICharacter()
     {
-
-        animator.SetBool("isRunning", !isRunning); // Koþma animasyonu durdurulur
+        // Reset running animation and AI state
+        animator.SetBool("isRunning", !isRunning);
         isRunning = !isRunning;
 
         isAlive = !isAlive;
 
-        if (isAlive == false)
+        if (!isAlive)
         {
             currentWaypointIndex = 0;
             isAtFinalWaypoint = false;
@@ -88,14 +83,17 @@ public class AIMovement : MonoBehaviour
 
     public void SetAgentStatus()
     {
+        // Toggle agent's movement capability
         agentActive = !agentActive;
         agent.enabled = agentActive;
     }
 
     public void AICharacterIsDone()
     {
+        // Disable the AI character after a short delay
         StartCoroutine(AICharacterIsDoneCoroutine());
     }
+
     private IEnumerator AICharacterIsDoneCoroutine()
     {
         yield return new WaitForSeconds(2f);

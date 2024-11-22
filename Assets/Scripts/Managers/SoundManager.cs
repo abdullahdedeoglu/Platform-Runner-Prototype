@@ -2,30 +2,32 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+    // Singleton instance for global access
     public static SoundManager Instance { get; private set; }
 
     [Header("Audio Sources")]
-    [SerializeField] private AudioSource backgroundMusicSource; // Arka plan müziði için
-    [SerializeField] private AudioSource sfxSource;             // Ses efektleri için
+    [SerializeField] private AudioSource backgroundMusicSource; // Audio source for background music
+    [SerializeField] private AudioSource sfxSource;             // Audio source for sound effects
 
     [Header("Audio Clips")]
-    [SerializeField] private AudioClip backgroundMusic;         // Þarký
-    [SerializeField] private AudioClip coinCollectSound;        // Para Toplama
-    [SerializeField] private AudioClip deathSound;              // Ölme
-    [SerializeField] private AudioClip collisionSound;          // Çarpýþma/Uçma
-    [SerializeField] private AudioClip cameraTransitionSound;   // Kamera Geçiþ
-    [SerializeField] private AudioClip gameWinSound;            // Oyunu Bitirme
+    [SerializeField] private AudioClip backgroundMusic;         // Background music track
+    [SerializeField] private AudioClip coinCollectSound;        // Sound for collecting coins
+    [SerializeField] private AudioClip deathSound;              // Sound for player death
+    [SerializeField] private AudioClip collisionSound;          // Sound for collisions or flying off
+    [SerializeField] private AudioClip cameraTransitionSound;   // Sound for camera transitions
+    [SerializeField] private AudioClip gameWinSound;            // Sound for winning the game
 
     private void Awake()
     {
+        // Ensure there is only one instance of SoundManager and persist it across scenes
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Sahne geçiþlerinde yok olmamasý için
+            DontDestroyOnLoad(gameObject); // Prevent destruction during scene transitions
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(gameObject); // Destroy duplicates
         }
     }
 
@@ -34,68 +36,48 @@ public class SoundManager : MonoBehaviour
         PlayBackgroundMusic();
     }
 
-    /// <summary>
-    /// Arka plan müziðini çalar.
-    /// </summary>
+
     public void PlayBackgroundMusic()
     {
         if (backgroundMusic != null && backgroundMusicSource != null)
         {
             backgroundMusicSource.clip = backgroundMusic;
-            backgroundMusicSource.loop = true;
+            backgroundMusicSource.loop = true; // Loop the background music
             backgroundMusicSource.Play();
         }
     }
 
-    /// <summary>
-    /// Coin toplama sesini çalar.
-    /// </summary>
+
     public void PlayCoinCollectSound()
     {
         PlaySFX(coinCollectSound);
     }
 
-    /// <summary>
-    /// Ölme sesini çalar.
-    /// </summary>
     public void PlayDeathSound()
     {
         PlaySFX(deathSound);
     }
 
-    /// <summary>
-    /// Çarpýþma veya uçma sesini çalar.
-    /// </summary>
     public void PlayCollisionSound()
     {
         PlaySFX(collisionSound);
     }
 
-    /// <summary>
-    /// Kamera geçiþ sesini çalar.
-    /// </summary>
     public void PlayCameraTransitionSound()
     {
         PlaySFX(cameraTransitionSound);
     }
 
-    /// <summary>
-    /// Oyunu kazanma sesini çalar.
-    /// </summary>
     public void PlayGameWinSound()
     {
         PlaySFX(gameWinSound);
     }
 
-    /// <summary>
-    /// Genel ses efektlerini çalar.
-    /// </summary>
-    /// <param name="clip">Çalýnacak ses dosyasý.</param>
     private void PlaySFX(AudioClip clip)
     {
         if (clip != null && sfxSource != null)
         {
-            sfxSource.PlayOneShot(clip);
+            sfxSource.PlayOneShot(clip); // Play the clip once
         }
     }
 }
